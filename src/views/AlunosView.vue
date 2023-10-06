@@ -3,8 +3,11 @@ import { ref, onMounted } from 'vue';
 import DialogAluno from '@/components/DialogAluno.vue';
 import http from '@/services/http.js';
 
-onMounted(() => {
-  getAlunos();
+const loading = ref(true);
+
+onMounted(async () => {
+  await getAlunos();
+  loading.value = false;
 });
 
 const headers = [
@@ -45,8 +48,9 @@ const abrirDialogEdicaoAluno = async (aluno) => {
       <DialogAluno @getAlunos="getAlunos" @close="idAluno = null" v-if="dialogAluno" :id="idAluno" v-model="dialogAluno">
       </DialogAluno>
     </div>
-    <v-data-table v-model:items-per-page="itemsPerPage" :search="search" :headers="headers" :items="alunos"
-      item-value="name" class="elevation-1">
+    <v-skeleton-loader class="mt-4" v-if="loading" type="table"></v-skeleton-loader>
+    <v-data-table v-else v-model:items-per-page="itemsPerPage" :search="search" :headers="headers" :items="alunos"
+      item-value="name" class="elevation-1 mt-4">
       <template v-slot:item.acoes="{ item }">
         <v-btn icon="mdi-pencil" @click="abrirDialogEdicaoAluno(item)"></v-btn>
       </template>

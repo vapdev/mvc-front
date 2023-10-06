@@ -15,15 +15,20 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'close', 'getAlunos']);
 
-onMounted(() => {
-    if (props.id) {
-        getAluno();
-    }
+const loading = ref(true);
+const httpLoading = ref(false);
+
+onMounted(async () => {
     dialog.value = props.modelValue;
+    if (props.id) {
+        await getAluno();
+    }
+    loading.value = false;
 });
 
 const addEditAluno = async () => {
     if (valid.value) {
+        httpLoading.value = true;
         if (props.id) {
             await http.put(`alunos/${props.id}`, aluno.value)
                 .then((response) => {
@@ -48,6 +53,7 @@ const addEditAluno = async () => {
                     console.log(error);
                 });
         }
+        httpLoading.value = false;
     }
 };
 
@@ -89,7 +95,8 @@ watch(dialog, (value) => {
                 <div class="pa-4 pb-0"><span v-if="id">Editar</span><span v-else>Adicionar</span> Aluno</div>
             </v-card-title>
             <v-card-text>
-                <v-form v-model="valid">
+                <v-skeleton-loader v-if="loading" type="article"></v-skeleton-loader>
+                <v-form v-else v-model="valid">
                     <v-container>
                         <v-row>
                             <v-col cols="12">
@@ -120,6 +127,7 @@ watch(dialog, (value) => {
                 <v-btn color="secondary" @click="closeDialog">Cancelar</v-btn>
                 <v-btn color="primary" @click="addEditAluno">Salvar</v-btn>
             </v-card-actions>
+            <v-progress-linear v-if="httpLoading" indeterminate color="secondary"></v-progress-linear>
         </v-card>
     </v-dialog>
 </template>

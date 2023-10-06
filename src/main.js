@@ -10,6 +10,7 @@ import { createVuetify } from 'vuetify'
 import {
     VDataTable,
 } from "vuetify/labs/VDataTable";
+import { VSkeletonLoader } from 'vuetify/labs/VSkeletonLoader'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
@@ -17,7 +18,7 @@ const vuetify = createVuetify({
     theme: {
         defaultTheme: 'dark'
     },
-    components: { ...components, VDataTable },
+    components: { ...components, VDataTable, VSkeletonLoader },
     directives,
 })
 
