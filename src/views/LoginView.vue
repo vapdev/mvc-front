@@ -8,8 +8,11 @@ const router = useRouter();
 
 const auth = useAuth();
 
+const loading = ref(false);
+
 async function login(){
   try {
+    loading.value = true;
     const {data} = await http.post('/login', user.value);
     auth.setToken(data.access_token);
     auth.setUser(data.user);
@@ -62,6 +65,7 @@ const valid = ref(true);
       <v-card-actions>
         <v-btn block color="primary" @click="login">Entrar</v-btn>
       </v-card-actions>
+      <v-progress-linear v-if="loading" indeterminate color="secondary"></v-progress-linear>
     </v-card>
   </main>
 </template>

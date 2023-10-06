@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'http://mvc-api.railway.internal/api';
+export const API_BASE_URL = 'http://mvc-api-production.up.railway.app/api';
