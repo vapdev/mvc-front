@@ -4,19 +4,27 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <v-layout class="rounded rounded-md">
-    <v-app-bar title="Application bar"></v-app-bar>
+    <v-app-bar title="MVC Ambiente do Professor"></v-app-bar>
 
-    <v-navigation-drawer>
-      <v-list>
-        <v-list-item title="Navigation drawer"></v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <v-navigation-drawer
+        permanent
+      >
+        <v-list nav>
+          <v-list-item prepend-icon="mdi-account-group" title="Alunos" value="alunos"></v-list-item>
+          <v-list-item prepend-icon="mdi-account-box" title="Professores" value="professores"></v-list-item>
+        </v-list>
 
-    <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
+        <template v-slot:append>
+          <div class="pa-4">
+            <v-btn icon="mdi-logout" color="red"></v-btn>
+          </div>
+        </template>
+      </v-navigation-drawer>
+
+    <v-main>
       <RouterView />
     </v-main>
   </v-layout>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

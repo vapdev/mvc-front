@@ -7,11 +7,17 @@ import router from './router'
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
+import {
+    VDataTable,
+} from "vuetify/labs/VDataTable";
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
 const vuetify = createVuetify({
-    components,
+    theme: {
+        defaultTheme: 'dark'
+    },
+    components: { ...components, VDataTable },
     directives,
 })
 
