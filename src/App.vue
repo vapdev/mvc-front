@@ -1,9 +1,17 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
+import LoginView from './views/LoginView.vue'
+let route = useRoute()
+
+function logout(){
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.reload();
+}
 </script>
 
 <template>
-  <v-layout class="rounded rounded-md">
+  <v-layout v-if="route.path !== '/login'" class="rounded rounded-md">
     <v-app-bar title="MVC Ambiente do Professor"></v-app-bar>
 
     <v-navigation-drawer
@@ -16,7 +24,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
         <template v-slot:append>
           <div class="pa-4">
-            <v-btn icon="mdi-logout" color="red"></v-btn>
+            <v-btn @click="logout" icon="mdi-logout" color="red"></v-btn>
           </div>
         </template>
       </v-navigation-drawer>
@@ -25,6 +33,6 @@ import { RouterLink, RouterView } from 'vue-router'
       <RouterView />
     </v-main>
   </v-layout>
+  <LoginView v-else />
 </template>
-
 <style scoped></style>

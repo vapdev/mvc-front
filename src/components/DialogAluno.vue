@@ -65,19 +65,19 @@ const nota = ref('');
                     <v-container>
                         <v-row>
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="nome" label="Nome" hide-details required></v-text-field>
+                                <v-text-field :rules="rules" v-model="nome" label="Nome" hide-details="auto" required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="matricula" label="Matrícula" hide-details required></v-text-field>
+                                <v-text-field :rules="rules" v-model="matricula" label="Matrícula" hide-details="auto" required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="email" label="E-mail" hide-details required></v-text-field>
+                                <v-text-field :rules="rules" v-model="email" label="E-mail" hide-details="auto" required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="nota" label="Nota" hide-details required></v-text-field>
+                                <v-text-field :rules="rules" v-model="nota" label="Nota" hide-details="auto" required></v-text-field>
                             </v-col>
                         </v-row>
                     </v-container>
