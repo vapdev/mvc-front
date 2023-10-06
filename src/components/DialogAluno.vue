@@ -1,40 +1,78 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
-
-onMounted(() => {
-    dialog.value = props.modelValue;
-});
-
-const addAluno = () => {
-    if (valid.value) {
-        const aluno = {
-            nome: nome.value,
-            matricula: matricula.value,
-            email: email.value,
-            nota: nota.value,
-        };
-        console.log(aluno);
-        // closeDialog();
-    } 
-};
+import http from '@/services/http.js';
 
 const props = defineProps({
     modelValue: {
         type: Boolean,
         default: false,
     },
-    edit: Boolean,
+    id: {
+        type: Number,
+        default: null,
+    },
 });
 
-const emit = defineEmits(['update:modelValue', 'close']);
+const emit = defineEmits(['update:modelValue', 'close', 'getAlunos']);
 
+onMounted(() => {
+    if (props.id) {
+        getAluno();
+    }
+    dialog.value = props.modelValue;
+});
+
+const addEditAluno = async () => {
+    if (valid.value) {
+        if (props.id) {
+            await http.put(`alunos/${props.id}`, aluno.value)
+                .then((response) => {
+                    if (response.status === 200) {
+                        emit('getAlunos');
+                        closeDialog();
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            return;
+        } else {
+            const { data } = await http.post('alunos', aluno.value)
+                .then((response) => {
+                    if (response.status === 201) {
+                        emit('getAlunos');
+                        closeDialog();
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+    }
+};
+
+const getAluno = async () => {
+    const { data } = await http.get(`alunos/${props.id}`);
+    aluno.value = data;
+};
+
+const dialog = ref(false);
 const closeDialog = () => {
     emit('update:modelValue', false);
     emit('close')
     dialog.value = false;
 };
 
-const dialog = ref(false);
+const aluno = ref({
+    nome: '',
+    matricula: '',
+    email: '',
+    nota: '',
+});
+const valid = ref(true);
+const rules = ref([
+    (v) => !!v || 'Campo obrigatório',
+]);
 
 watch(dialog, (value) => {
     if (!value) {
@@ -42,42 +80,36 @@ watch(dialog, (value) => {
         emit('close')
     }
 });
-
-const rules = ref([
-    (v) => !!v || 'Campo obrigatório',
-]);
-
-const valid = ref(true);
-const nome = ref('');
-const matricula = ref('');
-const email = ref('');
-const nota = ref('');
 </script>
 
 <template>
     <v-dialog width="600" v-model="dialog">
         <v-card>
             <v-card-title>
-                <div class="pa-4 pb-0"><span v-if="edit">Editar</span><span v-else>Adicionar</span> Aluno</div>
+                <div class="pa-4 pb-0"><span v-if="id">Editar</span><span v-else>Adicionar</span> Aluno</div>
             </v-card-title>
             <v-card-text>
                 <v-form v-model="valid">
                     <v-container>
                         <v-row>
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="nome" label="Nome" hide-details="auto" required></v-text-field>
+                                <v-text-field :rules="rules" v-model="aluno.nome" label="Nome" hide-details="auto"
+                                    required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="matricula" label="Matrícula" hide-details="auto" required></v-text-field>
+                                <v-text-field :rules="rules" v-model="aluno.matricula" label="Matrícula" hide-details="auto"
+                                    required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="email" label="E-mail" hide-details="auto" required></v-text-field>
+                                <v-text-field :rules="rules" v-model="aluno.email" label="E-mail" hide-details="auto"
+                                    required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="nota" label="Nota" hide-details="auto" required></v-text-field>
+                                <v-text-field :rules="rules" v-model="aluno.nota" label="Nota" hide-details="auto"
+                                    required></v-text-field>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -86,7 +118,7 @@ const nota = ref('');
             <v-card-actions class="pa-4">
                 <v-spacer></v-spacer>
                 <v-btn color="secondary" @click="closeDialog">Cancelar</v-btn>
-                <v-btn color="primary" @click="addAluno">Salvar</v-btn>
+                <v-btn color="primary" @click="addEditAluno">Salvar</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
