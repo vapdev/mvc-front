@@ -48,11 +48,13 @@ const abrirDialogEdicaoAluno = async (aluno) => {
       <DialogAluno @getAlunos="getAlunos" @close="idAluno = null" v-if="dialogAluno" :id="idAluno" v-model="dialogAluno">
       </DialogAluno>
     </div>
-    <v-skeleton-loader class="mt-4" v-if="loading" type="table"></v-skeleton-loader>
-    <v-data-table v-else v-model:items-per-page="itemsPerPage" :search="search" :headers="headers" :items="alunos"
+    <v-data-table items-per-page-text="Itens por página:" :loading="loading" v-model:items-per-page="itemsPerPage" :search="search" :headers="headers" :items="alunos"
       item-value="name" class="elevation-1 mt-4">
       <template v-slot:item.acoes="{ item }">
         <v-btn icon="mdi-pencil" @click="abrirDialogEdicaoAluno(item)"></v-btn>
+      </template>
+      <template v-slot:no-data>
+          Nenhum aluno encontrado.
       </template>
     </v-data-table>
   </main>
