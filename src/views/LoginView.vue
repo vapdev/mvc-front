@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import http from '@/services/http.js';
 import {useAuth} from '@/stores/auth.js';
 import {useRouter} from 'vue-router';
+import {toast} from 'vue3-toastify';
 
 const router = useRouter();
 
@@ -18,7 +19,8 @@ async function login(){
     auth.setUser(data.user);
     router.push('/');
   } catch (error) {
-    console.log(error?.response?.data);
+    toast.error('Usuário ou senha inválidos');
+    loading.value = false;;
   }
 }
 
