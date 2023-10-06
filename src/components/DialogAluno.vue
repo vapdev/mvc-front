@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import http from '@/services/http.js';
+import { toast } from 'vue3-toastify';
 
 const props = defineProps({
     modelValue: {
@@ -34,6 +35,7 @@ const addEditAluno = async () => {
                 .then((response) => {
                     if (response.status === 200) {
                         emit('getAlunos');
+                        toast.success('Aluno editado com sucesso')
                         closeDialog();
                     }
                 })
@@ -46,6 +48,7 @@ const addEditAluno = async () => {
                 .then((response) => {
                     if (response.status === 201) {
                         emit('getAlunos');
+                        toast.success('Aluno adicionado com sucesso')
                         closeDialog();
                     }
                 })
@@ -76,8 +79,23 @@ const aluno = ref({
     nota: '',
 });
 const valid = ref(true);
-const rules = ref([
+
+const rulesNome = ref([
     (v) => !!v || 'Campo obrigatório',
+]);
+const rulesMatricula = ref([
+    (v) => !!v || 'Campo obrigatório',
+    (v) => /^\d+$/.test(v) || 'A matrícula deve conter apenas números',
+]);
+
+const rulesEmail = ref([
+    (v) => !!v || 'Campo obrigatório',
+    (v) => /.+@.+\..+/.test(v) || 'E-mail inválido',
+]);
+
+const rulesNota = ref([
+    (v) => !!v || 'Campo obrigatório',
+    (v) => v >= 0 && v <= 10 || 'A nota deve ser entre 0 e 10',
 ]);
 
 watch(dialog, (value) => {
@@ -100,22 +118,22 @@ watch(dialog, (value) => {
                     <v-container>
                         <v-row>
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="aluno.nome" label="Nome" hide-details="auto"
+                                <v-text-field :rules="rulesNome" v-model="aluno.nome" label="Nome" hide-details="auto"
                                     required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="aluno.matricula" label="Matrícula" hide-details="auto"
+                                <v-text-field :rules="rulesMatricula" v-model="aluno.matricula" label="Matrícula" hide-details="auto"
                                     required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="aluno.email" label="E-mail" hide-details="auto"
+                                <v-text-field :rules="rulesEmail" v-model="aluno.email" label="E-mail" hide-details="auto"
                                     required></v-text-field>
                             </v-col>
 
                             <v-col cols="12">
-                                <v-text-field :rules="rules" v-model="aluno.nota" label="Nota" hide-details="auto"
+                                <v-text-field :rules="rulesNota" v-model="aluno.nota" label="Nota" hide-details="auto"
                                     required></v-text-field>
                             </v-col>
                         </v-row>
